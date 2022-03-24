@@ -7,9 +7,8 @@ import scrapy
 
 
 class IwonScrapyItem(scrapy.Item):
-    name = scrapy.Field(),
-    address = scrapy.Field(),
-    phone = scrapy.Field(),
-    email = scrapy.Field(),
-    website = scrapy.Field(),
-    pass
+    name = scrapy.Field()
+    address = scrapy.Field()
+    phone = scrapy.Field()
+    website = scrapy.Field()
+    email = scrapy.Field()

@@ -62,9 +62,10 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'iwon_scrapy.pipelines.IwonScrapyPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'iwon_scrapy.pipelines.IwonScrapyAddressPipeline': 300,
+   'iwon_scrapy.pipelines.DuplicatesPipeline': 400,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
