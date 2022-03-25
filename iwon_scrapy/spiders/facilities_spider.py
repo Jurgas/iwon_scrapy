@@ -31,20 +31,16 @@ class FacilitiesSpider(scrapy.Spider):
         'Centrum Aktywności Międzypokoleniowej'
     ]
 
-    address_keys = ['ul.', 'os.', 'ulica', 'osiedle']
     address_regex = r"((\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\.]{0,100}\d+[a-zA-Z]*(\s*(/|m.)\s*\d+[a-zA-Z]*)?)"
     post_code_regex = r"\s\d{2}-\d{3}\s"
-    phone_keys = ['tel', 'telefon', 'Nr tel', 'Nr telefonu', 'Numer tel', 'Numer telefonu', 'Kontakt tel']
     phone_regex = r"(((\+|0{2})\d{2}[-\s]?)?((\(\s?0?\d{2}\s?\))|\d{2})[\s-]?(\d[\s-]?){6}\d)"
     website_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-    email_keys = ['email', 'e-mail', 'adres email', 'adres e-mail']
     email_regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
     # re.findall(website_regex, string)[0][0]
 
-
     start_urls = [
-        # 'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
-        'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
+        'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
+        # 'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
     ]
 
     def parse(self, response, **kwargs):
@@ -52,8 +48,8 @@ class FacilitiesSpider(scrapy.Spider):
         page_text = ' '.join(_ for _ in page_text)
         page_text = ' '.join(page_text.split())
 
-        regex_delimiter = '(' + '|'.join(_ for _ in self.facilities_names) + ')'
-        split_text = re.split(regex_delimiter, page_text)
+        regex_names = '(' + '|'.join(_ for _ in self.facilities_names) + ')'
+        split_text = re.split(regex_names, page_text)
         split_text = [x for x in split_text if x]
 
         current_facility = None
@@ -71,7 +67,7 @@ class FacilitiesSpider(scrapy.Spider):
                 post_code_re = re.findall(self.post_code_regex, item)
                 if len(post_code_re) and len(address):
                     address = address + ', ' + post_code_re[0].strip()
-                elif len(post_code_re) :
+                elif len(post_code_re):
                     address = post_code_re[0].strip()
 
                 if len(address):
@@ -89,7 +85,10 @@ class FacilitiesSpider(scrapy.Spider):
                 if len(email_re):
                     facility['email'] = email_re[0]
 
-                follow_links = getattr(self, 'follow_links', None)
-                if follow_links:
-                    print('follow_links')
                 yield facility
+
+        follow_links = getattr(self, 'follow_links', False)
+        if follow_links:
+            for href in response.css('a::attr(href)'):
+                if '://' in href.get():
+                    yield response.follow(href, callback=self.parse)
