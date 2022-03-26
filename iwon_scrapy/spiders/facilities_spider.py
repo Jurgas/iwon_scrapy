@@ -1,5 +1,6 @@
 import scrapy
 import re
+import fitz
 
 from iwon_scrapy.items import IwonScrapyItem
 
@@ -28,10 +29,12 @@ class FacilitiesSpider(scrapy.Spider):
         'Stołeczne Centrum Osób Niepełnosprawnych',
         'Miejski Zespół Orzekania o Niepełnosprawności',
         'Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych',
-        'Centrum Aktywności Międzypokoleniowej'
+        'Centrum Aktywności Międzypokoleniowej',
+        'Dom pomocy',
+        'Zespół Domów Pomocy Społecznej'
     ]
 
-    address_regex = r"((\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\.]{0,100}\d+[a-zA-Z]*(\s*(/|m.)\s*\d+[a-zA-Z]*)?)"
+    address_regex = r"((\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)((?!\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\.]){0,100}\d+[a-zA-Z]*(\s*(/|m.)\s*\d+[a-zA-Z]*)?)"
     post_code_regex = r"\s\d{2}-\d{3}\s"
     phone_regex = r"(((\+|0{2})\d{2}[-\s]?)?((\(\s?0?\d{2}\s?\))|\d{2})[\s-]?(\d[\s-]?){6}\d)"
     website_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -39,16 +42,27 @@ class FacilitiesSpider(scrapy.Spider):
     # re.findall(website_regex, string)[0][0]
 
     start_urls = [
-        'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
+        # 'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
         # 'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
+        'file:///Users/sebastian/PycharmProjects/pythonProject/rejestr.pdf'
+        # 'https://pinquark.com'
+        # 'd'
     ]
 
     def parse(self, response, **kwargs):
-        page_text = response.xpath('//body//text()').getall()
-        page_text = ' '.join(_ for _ in page_text)
-        page_text = ' '.join(page_text.split())
+        page_text = ""
+        if response.url.startswith("file://"):
+            with fitz.open(response.url.replace("file://", "")) as doc:
+                for doc_page in doc:
+                    page_text += doc_page.get_text()
+        else:
+            page_text = response.xpath('//body//text()').getall()
+            page_text = ' '.join(_ for _ in page_text)
 
         regex_names = '(' + '|'.join(_ for _ in self.facilities_names) + ')'
+
+        page_text = ' '.join(page_text.split())
+
         split_text = re.split(regex_names, page_text)
         split_text = [x for x in split_text if x]
 
