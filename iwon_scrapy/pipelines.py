@@ -21,13 +21,13 @@ class IwonScrapyAddressPipeline:
 class DuplicatesPipeline:
 
     def __init__(self):
-        self.names_with_address_seen = set()
+        self.data_seen = set()
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        name_with_address = (adapter['name'] + ' ' + adapter['address'])
-        if name_with_address in self.names_with_address_seen:
+        data = adapter.values()
+        if data in self.data_seen:
             raise DropItem(f"Duplicate item found: {item!r}")
         else:
-            self.names_with_address_seen.add(name_with_address)
+            self.data_seen.add(data)
             return item

@@ -43,10 +43,8 @@ class FacilitiesSpider(scrapy.Spider):
 
     start_urls = [
         # 'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
-        # 'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
-        'file:///Users/sebastian/PycharmProjects/pythonProject/rejestr.pdf'
-        # 'https://pinquark.com'
-        # 'd'
+        'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
+        # 'file:///Users/sebastian/PycharmProjects/pythonProject/rejestr.pdf'
     ]
 
     def parse(self, response, **kwargs):
