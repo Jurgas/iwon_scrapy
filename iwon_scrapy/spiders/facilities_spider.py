@@ -1,3 +1,4 @@
+import io
 import scrapy
 import re
 import fitz
@@ -39,18 +40,19 @@ class FacilitiesSpider(scrapy.Spider):
     phone_regex = r"(((\+|0{2})\d{2}[-\s]?)?((\(\s?0?\d{2}\s?\))|\d{2})[\s-]?(\d[\s-]?){6}\d)"
     website_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     email_regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-    # re.findall(website_regex, string)[0][0]
 
     start_urls = [
         # 'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
         'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
         # 'file:///Users/sebastian/PycharmProjects/pythonProject/rejestr.pdf'
+        # 'https://www.poznan.uw.gov.pl/system/files/zalaczniki/rejestr_domow_pomocy_spolecznej_-_aktualizacja_22.03.2022_r.pdf'
     ]
 
     def parse(self, response, **kwargs):
         page_text = ""
-        if response.url.startswith("file://"):
-            with fitz.open(response.url.replace("file://", "")) as doc:
+        file = getattr(self, 'file', False)
+        if file:
+            with fitz.open("pdf", io.BytesIO(response.body)) as doc:
                 for doc_page in doc:
                     page_text += doc_page.get_text()
         else:
