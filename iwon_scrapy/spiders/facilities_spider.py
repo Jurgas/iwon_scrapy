@@ -25,8 +25,8 @@ class FacilitiesSpider(scrapy.Spider):
         'Dom Pomocy Społecznej',
         'Środowiskowy Dom Samopomocy',
         'Punkt Informacyjno-Koordynacyjny dla Osób z Niepełnosprawnościami',
-        'Punkt Informacyjno-Koordynacyjny',
         'Punkt Informacyjno-Koordynacyjny dla Osób z Niepełnosprawnością Intelektualną',
+        'Punkt Informacyjno-Koordynacyjny',
         'Stołeczne Centrum Osób Niepełnosprawnych',
         'Miejski Zespół Orzekania o Niepełnosprawności',
         'Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych',
@@ -44,7 +44,6 @@ class FacilitiesSpider(scrapy.Spider):
     start_urls = [
         # 'https://opsochota.waw.pl/strona-3369-instytucje_skierowane_do_osob_z.html'
         'https://bip.pcpr.powiat.poznan.pl/index.php/przydatne-adresy/wykaz-jednostek-organizacyjnych-pomocy-spolecznej-i-pieczy-zastepczej-w-powiecie-poznanskim/'
-        # 'file:///Users/sebastian/PycharmProjects/pythonProject/rejestr.pdf'
         # 'https://www.poznan.uw.gov.pl/system/files/zalaczniki/rejestr_domow_pomocy_spolecznej_-_aktualizacja_22.03.2022_r.pdf'
     ]
 
