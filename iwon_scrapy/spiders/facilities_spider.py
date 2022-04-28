@@ -38,7 +38,7 @@ class FacilitiesSpider(scrapy.Spider):
     address_regex = r"((\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)((?!\bul\.|\bulica\b|\bos\.|\bosiedle\b|\baleja\b|\bAleja\b)[a-zA-ZżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\.]){0,100}\d+[a-zA-Z]*(\s*(/|m.)\s*\d+[a-zA-Z]*)?)"
     post_code_regex = r"\s\d{2}-\d{3}\s"
     phone_regex = r"(((\+|0{2})\d{2}[-\s]?)?((\(\s?0?\d{2}\s?\))|\d{2})[\s-]?(\d[\s-]?){6}\d)"
-    website_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    website_regex = r"(?i)\b((?:https?://|www\d{0,3}[.])(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     email_regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
 
     start_urls = [
